@@ -54,40 +54,118 @@
             }
         </style>
         <script type="text/javascript">
+            var displayBuffer = "";
+            var numero = "";
+            //Termos para a operação logo abaixo: / * + -
+            var termos = [undefined,undefined,undefined]
+            //undefined: valor vazio
+            //1°termo / operador / 2° termo
+            var resultado = undefined;
             
+            function pressNum(num){
+                //faz o efeito 123 no display
+                numero = numero.concat(num.innerHTML);
+                //verificar no console
+                console.log(numero);
+                //mostra no display da calculadora
+                showDisplay(num.innerHTML);
+                /*
+                    showDisplay(numero); eh como se nao limpasse o buffer
+                */
+            }
+            
+            function pressOperator(op){
+                    if(termos[1]==undefined){
+                        termos[0] = numero;
+                        termos[1] = op.innerHTML;
+                        showDisplay(op.innerHTML); 
+                        numero = "";  
+                    }   
+                }
+                function presEqual(){
+                if(termos[0]!=undefined && termos[1] != undefined && numero != ''){
+                     //faz o 2° termo sair do buffer e ir para o terminal ficticio de operação
+                    termos[2] = numero;
+                    // keepresultado salva o resultado para uma proxima operação
+                    var keepresultado;
+                    switch(termos[1]){
+                        case '+':
+                        resultado = Number(termos[0]) + Number(termos[2]);
+                        break;
+                        case '-':
+                        resultado = Number(termos[0]) - Number(termos[2]);
+                        break;
+                        case '*':
+                        resultado = Number(termos[0]) * Number(termos[2]);
+                        break;
+                        case '/':
+                        resultado = Number(termos[0]) / Number(termos[2]);
+                        break;
+                    }
+                    keepresultado = resultado;
+                    // resultado = termos[0] + termos[2]; transformados em numeros para nao concatenar
+                    clearDisplay();
+                    showDisplay(resultado);
+                    clearMemory();
+                    // numero = keepresultado; salva o resultado no buffer para proximas operaçoes
+                    numero = keepresultado.toString();
+                    // toString tornou a o resultado em string para usar o separador de numeros inteiros "."
+                    } 
+                    // fora da condição nada acontece
+            }
+            function clearMemory(){
+                numero = "";
+                termos = [undefined,undefined,undefined];
+                resultado = undefined;
+            }
+            function clearDisplay(){
+                displayBuffer = "";
+                var tela = document.getElementById('display');
+                tela.value = displayBuffer;
+            }
+            function clearAll(){
+                clearDisplay();
+                clearMemory();
+            }
+            function showDisplay(conteudo){
+                displayBuffer = displayBuffer.concat(conteudo);
+                var tela = document.getElementById('display');
+                tela.value = displayBuffer;
+            }
         </script>
 	</head>
 	<body>
         
         <div id="calculadora">
-              <textarea></textarea>
-                <div>
-                    <button>C</button>
-                    <button>C/E</button>
-                    <button>+</button>
-                </div>
-                <div>
-                    <button>1</button>
-                    <button>2</button>
-                    <button>3</button>
-                    <button>-</button>
-                </div>
-                <div>
-                    <button>4</button>
-                    <button>5</button>
-                    <button>6</button>
-                    <button>*</button>
-                </div>
-                <div>
-                    <button>7</button>
-                    <button>8</button>
-                    <button>9</button>
-                    <button>/</button>
-                    <button>0</button>
-                    <button>.</button>
-                    <button>=</button>  
-                </div>
-        </div>
+            <textarea id="display" disabled rows="1"></textarea>
+              <div>
+                  <button id="limpatela" onclick="clearAll()">C</button>
+                  <button>C/E</button>
+                  <button onclick="pressOperator(this)">+</button>
+              </div>
+              <div>
+                  <button onclick="pressNum(this)">1</button>
+                  <button onclick="pressNum(this)">2</button>
+                  <button onclick="pressNum(this)">3</button>
+                  <button onclick="pressOperator(this)">-</button>
+              </div>
+              <div>
+                  <button onclick="pressNum(this)">4</button>
+                  <button onclick="pressNum(this)">5</button>
+                  <button onclick="pressNum(this)">6</button>
+                  <button onclick="pressOperator(this)">*</button>
+              </div>
+              <div>
+                  <button onclick="pressNum(this)">7</button>
+                  <button onclick="pressNum(this)">8</button>
+                  <button onclick="pressNum(this)">9</button>
+                  <button onclick="pressOperator(this)">/</button>
+                  <button onclick="pressNum(this)">0</button>
+                  <button onclick="pressNum(this)">.</button>
+                  <button id="igual" onclick="presEqual()">=</button>  
+              </div>
+             
+      </div>
         <script>
             
         </script>
